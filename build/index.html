@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>openFMN</title>
+		<style>
+			body{
+				background-color: #000;
+			}
+			*{color:#fff;}
+			input,button{
+				border: 1px solid #fff;
+				background-color: #000;
+				color: #fff;
+				padding: 5px;
+				margin: 5px;
+			}
+			input,button:focus{
+				outline: none;
+			}
+			.stero{
+				height: 50vh;
+				overflow-y: scroll;
+			}
+		</style>
+	</head>
+	<body>
+		<pre id="stats">status</pre>
+		<button id="ntlgt">Hide logs</button>
+		<pre id="logs">log top</pre>
+        <div id="lazy" class="stero">
+            <pre id="msgs">[System] Root Message</pre>
+            
+        </div>
+		<div>
+			<input type="text" id="name" placeholder="Name" />
+			<button onclick="sendMsg();">Change</button>
+			<input type="text" id="input" placeholder="Message" />
+			<button onclick="sendMessage(document.getElementById('input').value)">Send</button>
+		</div>
+
+		<script src="/peerjs.js"></script>
+		<script src="build.js"></script>
+	</body>
+</html>
