@@ -17,20 +17,26 @@
 			input,button:focus{
 				outline: none;
 			}
+			.stero{
+				height: 50vh;
+				overflow-y: scroll;
+			}
 		</style>
 	</head>
 	<body>
 		<pre id="stats">status</pre>
+		<button id="ntlgt">Hide logs</button>
 		<pre id="logs">log top</pre>
-        <div>
+        <div id="lazy" class="stero">
             <pre id="msgs">[System] Root Message</pre>
-            <div>
-                <input type="text" id="name" placeholder="Name" />
-                <button onclick="sendMsg();">Change</button>
-                <input type="text" id="input" placeholder="Message" />
-                <button onclick="sendMessage(document.getElementById('input').value)">Send</button>
-            </div>
+            
         </div>
+		<div>
+			<input type="text" id="name" placeholder="Name" />
+			<button onclick="sendMsg();">Change</button>
+			<input type="text" id="input" placeholder="Message" />
+			<button onclick="sendMessage(document.getElementById('input').value)">Send</button>
+		</div>
 
 		<script src="peerjs.js"></script>
 		<script>
@@ -198,6 +204,9 @@
 					regularParticipate(net[i]["id"]);
 				}
 				console.log(window._con);
+				var s = "";
+				if(Object.keys(window._con).length>1) s = "s";
+				status(`Connected to ${Object.keys(window._con).length} node${s}`);
 			}
 			function regularParticipate(pif){
 				var conn = peer.connect(`openfnm-node${pif}-x`);
@@ -256,6 +265,7 @@
 			}
 		</script>
         <script>
+			var muted = [];
             //listen to enter key on input
             document.getElementById("input").addEventListener("keyup", function(event) {
                 event.preventDefault();
@@ -278,6 +288,26 @@
                     document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Message contains invalid characters.";
                     return false;
                 }
+				//check for custom comannds starting with "/"
+				if(message.indexOf("/") == 0){
+					var cmd = message.replace("/","");
+					cmd = cmd.split(" ");
+					if(cmd[0] == "mute"){
+						muted.push(cmd[1]);
+						document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Muted "+cmd[1];
+						document.getElementById("input").value = "";
+						return false;
+					} else if(cmd[0] == "unmute"){
+						muted.splice(muted.indexOf(cmd[1]), 1);
+						document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Unmuted "+cmd[1];
+						document.getElementById("input").value = "";
+						return false;
+					} else if(cmd[0] == "viewmutes"){
+						document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Muted: "+muted.join(", ");
+						document.getElementById("input").value = "";
+						return false;
+					}
+				}
                 if(window._cname == undefined){
                     document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: You must set a name before sending messages.";
                     return false;
@@ -313,6 +343,9 @@
 					"type": "set_name",
 					"name": name
 				};
+				if(window._cname != undefined){
+					data["pname"] = window._cname;
+				}
 				window._nameCallback = true;
 				broadcast(data);
 				setTimeout(function(){
@@ -326,9 +359,15 @@
 			}
             registerFunction((function(data,id){
                 if(data.type == "bsc_msg"){
-                    document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+`[${data.name}]: `+data.message;
+					if(muted.indexOf(data.name) == -1){
+                    	document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+`[${data.name}]: `+data.message;
+						scrollEnd();
+					}
                 }
 				if(data.type == "set_name"){
+					if(muted.indexOf(data.pname) != -1){
+						muted.push(data.name);
+					}
 					if(data.name == window._cname){
 						//send name back to sender using existing connection found by looping through window._con
 						for(var i in window._con){
@@ -343,5 +382,25 @@
 				}
             }));
         </script>
+		<script>
+			//UI FUNCTIONALITY SCRIPTS
+			var ntlgt_state = true;
+			document.getElementById("ntlgt").addEventListener("click", function(){
+				console.log(ntlgt_state);
+				if(ntlgt_state){
+					document.getElementById("logs").style.display = "none";
+					document.getElementById("ntlgt").textContent = "Show logs";
+					ntlgt_state = false;
+				} else {
+					document.getElementById("logs").style.display = "block";
+					document.getElementById("ntlgt").textContent = "Hide logs";
+					ntlgt_state = true;
+				}
+			});
+			function scrollEnd(){
+				var element = document.getElementById("lazy");
+				element.scrollTop = element.scrollHeight;
+			}
+		</script>
 	</body>
 </html>
