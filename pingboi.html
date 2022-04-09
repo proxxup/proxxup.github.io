@@ -14,6 +14,9 @@
 				padding: 5px;
 				margin: 5px;
 			}
+			button{
+				cursor: pointer;
+			}
 			input,button:focus{
 				outline: none;
 			}
@@ -250,9 +253,11 @@
                     window._eventHandlers[i](data,id);
                 }
             }
+			window.onerror = function(message, source, lineno, colno, error) {
+				log("Critical exception: "+message+" on line "+lineno+" : "+error);
+			};
 			try{
 				log("started");
-				//, "host": "poshsorrowfultruetype.i10.repl.co/peerjs", "port": "8080"
 				var peer = new Peer({"debug": 1});
 				peer.on('open', function(id) {
 					peer.on('open', function(id){
@@ -360,10 +365,12 @@
 				}
 				window._nameCallback = true;
 				broadcast(data);
+				document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Checking name.";
+				scrollEnd();
 				setTimeout(function(){
 					if(window._nameCallback == false){
 						document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Name is already taken.";
-					scrollEnd();
+						scrollEnd();
 					}else{
 						window._cname = name;
 						document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: Name set to "+name+".";
@@ -371,9 +378,38 @@
 					}
 				}, 3000)
 			}
+			var spam = {};
             registerFunction((function(data,id){
                 if(data.type == "bsc_msg"){
 					if(muted.indexOf(data.name) == -1){
+						var s = data.name;
+						if(spam[s] == undefined){
+							spam[s] = 7;
+							setTimeout((function(ss){
+								spam[ss] = spam[ss]+1;
+							}), 6000, s);
+						} else {
+							if(spam[s]-1<1){
+								spam[s] = spam[s]-1;
+								setTimeout((function(ss){
+									spam[ss] = spam[ss]+1;
+								}), 8000, s);
+								if(spam["_sp"] == undefined || spam["_sp"] == false){
+									document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+"[System (hidden)]: "+data.name+" appears to be spamming. Consider muting them with /mute "+data.name;
+									scrollEnd();
+									spam["_sp"] = true;
+									setTimeout((function(){
+										spam["_sp"] = false;
+									}), 10000);
+								}
+								
+							} else {
+								spam[s] = spam[s]-1;
+								setTimeout((function(ss){
+									spam[ss] = spam[ss]+1;
+								}), 6000, s);
+							}
+						}
                     	document.getElementById("msgs").textContent=document.getElementById("msgs").textContent+"\n"+`[${data.name}]: `+data.message;
 						scrollEnd();
 					}
