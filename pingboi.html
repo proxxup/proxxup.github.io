@@ -50,6 +50,10 @@
 			function status(s){
 				document.getElementById("stats").textContent = "STATUS: "+s;
 			}
+			console.error = function(e,b,c,k,l){
+				var a = [e,b,c,k,l];
+				log("[ERROR] "+a.join(" "));
+			}
 			async function checkConn(conn){
 				var con = false;
 				conn.on('open', function() {
