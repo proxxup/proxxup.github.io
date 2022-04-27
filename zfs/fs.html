@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Classes</title>
+		<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+		<style>
+			body{
+				background-color: #000;
+			}
+			*{
+				color: #fff;
+			}
+			button{
+				background-color: transparent;
+				border: 2px solid red;
+				display: block;
+				margin-bottom: 3em;
+				cursor: pointer;
+			}
+			span{
+				font-family: monospace;
+			}
+			select, select *{
+				color: #000 !important;
+			}
+			div{
+				margin-top: 1em;
+			}
+		</style>
+	</head>
+	<body onbeforeunload="return hello();">
+		<pre style="font-size:2em;">Bünker Download</pre>
+		<select id="verselect">
+			<option value="v6-hotfix">v6-hotfix</option>
+			<option value="v5.1-beta">v5.1-beta</option>
+		</select>
+		<pre style="color:red;font-size:2em;" id="autup"></pre>
+		<pre id="progress"></pre>
+		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected bunker version (Choose a empty folder or create one once the folder picker opens)</button>
+		<pre id="ert"></pre>
+		<script>
+			function hello(){
+				return "click exit page safely";
+			}
+			(function(){
+				const urlParams = new URLSearchParams(window.location.search);
+				if(urlParams.get("intent") == "update" && urlParams.get("target") != null){
+					document.getElementById("verselect").value = urlParams.get("target");
+					document.getElementById("verselect").disabled = true;
+					document.getElementById("autup").textContent = `updating from ${urlParams.get("source")} to ${urlParams.get("target")}`;
+					document.getElementById("btne").textContent = "Click to update existing bunker folder";
+				}
+			})();
+			async function noregret(){
+				try{
+				var vn = document.getElementById("verselect").value;
+				document.getElementById("progress").textContent = "getting release info";
+				var d = await fetch(`versions/${vn}/manifest.json`);
+				d = await d.json();
+				document.getElementById("progress").textContent = "getting release files";
+				var compiled = await fetch(`versions/${vn}/${d["paths"]["comp"]}`);
+				compiled = await compiled.text();
+				console.log("compiled done with "+compiled.length);
+				var launcher = await fetch(`versions/${vn}/${d["paths"]["laun"]}`);
+				launcher = await launcher.text();
+				console.log("launcher done with "+launcher.length);
+				document.getElementById("progress").textContent = "generating manifest.json";
+				var manifest = {
+					"title": "bunker-"+vn,
+					"version": vn,
+					"created": (new Date).getTime()
+				}
+				manifest=JSON.stringify(manifest);
+				saveFiles(compiled, launcher, manifest, `versions/${vn}/${d["paths"]["zip"]}`);
+				}catch(e){
+					document.getElementById("ert").innerHTML = `exeception throw, try downloading directly <a href="versions/${vn}/${d["paths"]["zip"]}">here</a>`;
+				}
+			}
+			async function saveFiles(c,l,m,p){
+				try{
+				document.getElementById("progress").textContent = "saving files";
+				const d = await window.showDirectoryPicker();
+				const cm = await d.getFileHandle('compiled.js', { create: true });
+				const cmf = await cm.createWritable();
+				await cmf.write(c);
+				await cmf.close();
+				const lm = await d.getFileHandle('launcher.html', { create: true });
+				const lmf = await lm.createWritable();
+				await lmf.write(l);
+				await lmf.close();
+				const mn = await d.getFileHandle('manifest.json', { create: true });
+				const mnf = await mn.createWritable();
+				await mnf.write(m);
+				await mnf.close();
+				document.getElementById("progress").textContent = "saved files";
+				}catch(e){
+					document.getElementById("ert").innerHTML = `exeception throw, try downloading directly <a href="${p}">here</a>`;
+				}
+			}
+			
+		</script>
+		<button onclick="killPage();">Safely exit page</button>
+			
+	</body>
+</html>

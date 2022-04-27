@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Classes</title>
+		<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+		<style>
+			body{
+				background-color: #000;
+			}
+			*{
+				color: #fff;
+			}
+			button{
+				background-color: transparent;
+				border: none;
+				display: block;
+				margin-bottom: 5px;
+			}
+			span{
+				font-family: monospace;
+			}
+			select, select *{
+				color: #000 !important;
+			}
+		</style>
+	</head>
+	<body>
+		<pre>Bünker launch page</pre>
+		<pre>This work is licensed under the MIT license<br>Features may be broken or missing<br>Subject to change<br><span id="cload"></span></pre>
+		<div>
+			<button onclick="initB();">Initialize bunker index</button><span id="closew"></span>
+		</div>
+		<pre>select opening provider: </pre><select style="color:black;" id="provi">
+			<option value="https://javascythe.github.io/provider">*.github.io</option>
+			<option value="https://provider.4sure.ml">*.4sure.ml</option>
+			<option value="https://provider-nu.vercel.app/">*.vercel.app</option>
+			<option value="https://provider.i10.repl.co">*.repl.co</option>
+			<option value="http://uv-provider.surge.sh/">*.surge.sh</option>
+			<option value="https://twisty-ruddy-snickerdoodle.glitch.me">*.glitch.me</option>
+		</select>
+		<script>
+			function phase(code){
+				var x = window.open("");
+				x.document.write(code);
+				return x;
+			}
+			function pm(code,t){
+				document.getElementsByTagName("iframe")[0].contentWindow.postMessage({
+					"type": t,
+					"code": code
+				}, "*");
+			}
+			function initB(){
+				document.getElementById("closew").textContent = "Close this page after bunker opens";
+				var ir = document.createElement("iframe");
+				ir.setAttribute("src", document.getElementById("provi").value);
+				document.body.appendChild(ir);
+				setTimeout(function(){
+					//pm(`var x = window.open("");x.document.write(`);
+					var e = (function(){
+						if(window.__files == undefined){
+							document.getElementById("closew").textContent = "Failed to initialize bunker: compiled.js missing";
+						} else {
+							var d = window.__files["files"]["/root.html"];
+							return d;
+						}
+					})();
+					//phase(e.replace("{{COMPILEDJS}}", `window.__files=JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(window.__files))}"))`))
+					//var b = `window.open("").document.write(decodeURIComponent("${
+					//	encodeURIComponent()
+					//}"))`;
+					//var k = e.replace("{{COMPILEDJS}}", `window.__files=JSON.parse(decodeURIComponent("${encodeURIComponent())}"))`);
+					//var b = encodeURIComponent(e);
+					//var j = encodeURIComponent(JSON.stringify(window.__files));
+					//console.log(b.indexOf("%7B%7BCOMPILEDJS%7D%7D"));
+					//var k = b.replace("%7B%7BCOMPILEDJS%7D%7D", `window.__files=JSON.parse(decodeURIComponent(\\"${j}\\"))`);delete b; delete j;
+					//var a = `window.open("").document.write(decodeURIComponent("${
+					//	k
+					//}"))`;
+					pm(`window.__files=${JSON.stringify(window.__files)}`, "exec");
+					pm(e, "load");
+				}, 2000);
+			}
+		</script>
+		<script src="compiled.js"></script>
+		<script>document.getElementById("cload").textContent = "compiled.js loaded"</script>
+	</body>
+</html>

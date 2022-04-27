@@ -1,0 +1,9 @@
+{
+	"title": "bunker-v6-hotfix",
+	"version": "v6-hotfix",
+	"paths": {
+		"zip": "bunker-v6-hotfix.zip",
+		"comp": "compiled.js",
+		"laun": "launcher.html"
+	}
+}
