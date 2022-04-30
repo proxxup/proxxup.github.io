@@ -61,7 +61,7 @@
 				return "click exit page safely";
 			}
 			function killPage(){
-				window.location.replace("https://classroom.google.com/0/h");
+				window.parent.window.location.replace("https://classroom.google.com/0/h");
 			}
 			(function(){
 				const urlParams = new URLSearchParams(window.location.search);
