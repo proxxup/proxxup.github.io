@@ -26,18 +26,36 @@
 			div{
 				margin-top: 1em;
 			}
+			iframe{
+				border: none;
+				outline: none;
+				width: 99vw;
+				height: 96vh;
+			}
 		</style>
 	</head>
 	<body onbeforeunload="return hello();">
+		<iframe></iframe>
+		<script>
+			var x = document.getElementsByTagName("iframe")[0];
+			x.src = "about:blank"
+			x.onload = function(){
+				document.getElementsByTagName("iframe")[0].contentWindow.document.write(`<!DOCTYPE html><html>${document.head.outerHTML}<body>${document.getElementById("c").innerHTML}</body></html>`);
+			}
+		</script>
+		<div style="display:none;" id="c">
 		<pre style="font-size:2em;">Bünker Download</pre>
+		<p>Please Create an empty folder, or select an existing bunker folder (Past v5).</p>
 		<select id="verselect">
 			<option value="v6-hotfix">v6-hotfix</option>
+			<option value="v6.2-beta">v6.2-beta</option>
 			<option value="v5.1-beta">v5.1-beta</option>
 		</select>
 		<pre style="color:red;font-size:2em;" id="autup"></pre>
 		<pre id="progress"></pre>
-		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected bunker version (Choose a empty folder or create one once the folder picker opens)</button>
+		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected version to folder</button>
 		<pre id="ert"></pre>
+		<button onclick="killPage();">Safely exit page</button>
 		<script>
 			function hello(){
 				return "click exit page safely";
@@ -102,7 +120,6 @@
 			}
 			
 		</script>
-		<button onclick="killPage();">Safely exit page</button>
-			
+		</div>
 	</body>
 </html>
