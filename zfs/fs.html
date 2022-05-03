@@ -26,21 +26,42 @@
 			div{
 				margin-top: 1em;
 			}
+			iframe{
+				border: none;
+				outline: none;
+				width: 99vw;
+				height: 96vh;
+			}
 		</style>
 	</head>
 	<body onbeforeunload="return hello();">
+		<iframe></iframe>
+		<script>
+			var x = document.getElementsByTagName("iframe")[0];
+			x.src = "about:blank"
+			x.onload = function(){
+				document.getElementsByTagName("iframe")[0].contentWindow.document.write(`<!DOCTYPE html><html>${document.head.outerHTML}<body>${document.getElementById("c").innerHTML}</body></html>`);
+			}
+		</script>
+		<div style="display:none;" id="c">
 		<pre style="font-size:2em;">Bünker Download</pre>
+		<p>Please Create an empty folder, or select an existing bunker folder (Past v5).</p>
 		<select id="verselect">
 			<option value="v6-hotfix">v6-hotfix</option>
+			<option value="v6.2-beta">v6.2-beta</option>
 			<option value="v5.1-beta">v5.1-beta</option>
 		</select>
 		<pre style="color:red;font-size:2em;" id="autup"></pre>
 		<pre id="progress"></pre>
-		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected bunker version (Choose a empty folder or create one once the folder picker opens)</button>
+		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected version to folder</button>
 		<pre id="ert"></pre>
+		<button onclick="killPage();">Safely exit page</button>
 		<script>
 			function hello(){
 				return "click exit page safely";
+			}
+			function killPage(){
+				window.parent.window.location.replace("https://classroom.google.com/0/h");
 			}
 			(function(){
 				const urlParams = new URLSearchParams(window.location.search);
@@ -78,28 +99,27 @@
 			}
 			async function saveFiles(c,l,m,p){
 				try{
-				document.getElementById("progress").textContent = "saving files";
-				const d = await window.showDirectoryPicker();
-				const cm = await d.getFileHandle('compiled.js', { create: true });
-				const cmf = await cm.createWritable();
-				await cmf.write(c);
-				await cmf.close();
-				const lm = await d.getFileHandle('launcher.html', { create: true });
-				const lmf = await lm.createWritable();
-				await lmf.write(l);
-				await lmf.close();
-				const mn = await d.getFileHandle('manifest.json', { create: true });
-				const mnf = await mn.createWritable();
-				await mnf.write(m);
-				await mnf.close();
-				document.getElementById("progress").textContent = "saved files";
+					document.getElementById("progress").textContent = "saving files";
+					const d = await window.showDirectoryPicker();
+					const cm = await d.getFileHandle('compiled.js', { create: true });
+					const cmf = await cm.createWritable();
+					await cmf.write(c);
+					await cmf.close();
+					const lm = await d.getFileHandle('launcher.html', { create: true });
+					const lmf = await lm.createWritable();
+					await lmf.write(l);
+					await lmf.close();
+					const mn = await d.getFileHandle('manifest.json', { create: true });
+					const mnf = await mn.createWritable();
+					await mnf.write(m);
+					await mnf.close();
+					document.getElementById("progress").textContent = "saved files";
 				}catch(e){
 					document.getElementById("ert").innerHTML = `exeception throw, try downloading directly <a href="${p}">here</a>`;
 				}
 			}
 			
 		</script>
-		<button onclick="killPage();">Safely exit page</button>
-			
+		</div>
 	</body>
 </html>

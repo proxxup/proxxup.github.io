@@ -1,0 +1,9 @@
+{
+	"title": "bunker-v6-fixhost",
+	"version": "v6-fixhost",
+	"paths": {
+		"zip": "bunker-v6-fixhost.zip",
+		"comp": "compiled.js",
+		"laun": "launcher.html"
+	}
+}

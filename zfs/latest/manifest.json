@@ -1,6 +1,6 @@
 {
-	"title": "bunker-v6-hotfix",
-	"version": "v6-hotfix",
-	"path": "/versions/v6-hotfix",
-	"severity": "bugfix"
+	"title": "bunker-v6-fixhost",
+	"version": "v6-fixhost",
+	"path": "/versions/v6-fixhost",
+	"severity": "url-update"
 }
