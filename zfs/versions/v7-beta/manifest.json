@@ -1,0 +1,9 @@
+{
+	"title": "bunker-v7-beta",
+	"version": "v7-beta",
+	"paths": {
+		"zip": "bunker-v7-beta.zip",
+		"comp": "compiled.js",
+		"laun": "launcher.html"
+	}
+}

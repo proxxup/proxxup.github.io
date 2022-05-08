@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Classes</title>
+		<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+		<style>
+			body{
+				background-color: #000;
+			}
+			*{
+				color: #fff;
+			}
+			button{
+				background-color: transparent;
+				border: 2px solid red;
+				display: block;
+				margin-bottom: 3em;
+				cursor: pointer;
+			}
+			span{
+				font-family: monospace;
+			}
+			select, select *{
+				background-color: rgb(20,20,20);
+				color: #FFF !important;
+				font-size: 1em;
+				border-radius: 5px;
+			}
+			.bigg{
+				width: 99%;
+				height: 50%;
+			}
+			.emph{
+				color:red;
+				font-size: 2em;
+				font-family: arial;
+			}
+			.column {
+				float: left;
+				width: 33%;
+				border: 1px solid white;
+				height: 90vh;
+				text-align: center;
+			}
+			.row:after {
+				content: "";
+				display: table;
+				clear: both;
+			}
+			div h4{
+				margin: 0px;
+				font-size:2em;
+				font-family: monospace;
+			}
+			div p{
+				font-family: arial;
+				padding-left: 2.5vw;
+				padding-right: 2.5vw;
+			}
+			@media screen and (max-width: 600px) {
+			  .column {
+				width: 100%;
+			  }
+				iframe{
+					width: 99%;
+				}
+			}
+			.c_off{
+				margin: 2em;
+				display: flex;
+				justify-content: center;
+			}
+			.spb button{
+				font-size: 1.5em;
+			}
+			/*stolen off internet*/
+			.glow-on-hover {
+				width: 220px;
+				height: 50px;
+				border: none;
+				outline: none;
+				color: #fff;
+				background: #111;
+				cursor: pointer;
+				position: relative;
+				z-index: 0;
+				border-radius: 10px;
+			}
+
+			.glow-on-hover:before {
+				content: '';
+				/*background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);*/
+				background: linear-gradient(45deg, rgba(0,0,0,1) 0%, rgba(36,36,36,1) 11%, rgba(55,55,55,1) 27%, rgba(77,77,77,1) 43%, rgba(119,119,119,1) 56%, rgba(93,93,93,1) 72%, rgba(62,62,62,1) 90%, rgba(0,0,0,1) 100%);
+				position: absolute;
+				top: -2px;
+				left:-2px;
+				background-size: 400%;
+				z-index: -1;
+				filter: blur(5px);
+				width: calc(100% + 4px);
+				height: calc(100% + 4px);
+				animation: glowing 20s linear infinite;
+				opacity: 0;
+				transition: opacity .3s ease-in-out;
+				border-radius: 10px;
+			}
+
+			.glow-on-hover:active {
+				color: #000
+			}
+
+			.glow-on-hover:active:after {
+				background: transparent;
+			}
+
+			.glow-on-hover:hover:before {
+				opacity: 1;
+			}
+
+			.glow-on-hover:after {
+				z-index: -1;
+				content: '';
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background: #111;
+				left: 0;
+				top: 0;
+				border-radius: 10px;
+			}
+
+			@keyframes glowing {
+				0% { background-position: 0 0; }
+				50% { background-position: 400% 0; }
+				100% { background-position: 0 0; }
+			}
+		</style>
+	</head>
+	<body>
+		<div class="row">
+			<div class="column" id="ifhst">
+				<h4>INFORMATION</h4>
+				<p>Bünker launch page</p>
+				<p>This work is licensed under the MIT license<br>Features may be broken or missing<br>Subject to change</p>
+				<p>This work follows the forward linking security policy</p>
+				<p id="closew"></p>
+			</div>
+			<div class="column" id="upd_clm">
+				<h4>UPDATES</h4>
+				<p>Current version: <span id="auto-vs">detecting</span></p>
+				<p id="aut">Checking for updates...</p>
+			</div>
+			<div class="column">
+				<h4>LAUNCH</h4>
+				<p>Bunker launches in an about:blank page, which makes it invisible to both history and extensions that monitor your screen</p>
+				<p>files: <span id="cload">loading...</span></p>
+				<p>select opening provider: </p><select style="color:black;" id="provi">
+					<option value="https://javascythe.github.io/provider">*.github.io</option>
+					<option value="https://provider.4sure.ml">*.4sure.ml</option>
+					<option value="https://provider-nu.vercel.app/">*.vercel.app</option>
+					<option value="https://provider.i10.repl.co">*.repl.co</option>
+					<option value="http://uv-provider.surge.sh/">*.surge.sh</option>
+					<option value="https://twisty-ruddy-snickerdoodle.glitch.me">*.glitch.me</option>
+				</select>
+				<select style="color:black;" id="killsw">
+					<option value="1">Remove this page from history after launch</option>
+					<option value="0">Keep this page after launch</option>
+				</select>
+				<div class="c_off spb" style="margin-top: 3em;">
+					<button onclick="initB();" class="glow-on-hover" type="button">LAUNCH BÜNKER</button>
+				</div>
+				<div class="c_off">
+					<button onclick="kill();">Remove this tab now (without opening bunker)</button>
+				</div>
+			</div>
+		</div>
+		<div style="display:none">
+		<script>
+			const ver = "v7-beta";
+			document.getElementById("auto-vs").textContent = "bunker-"+ver;
+			function dlnew(dl){
+				var ifr = document.createElement("iframe");
+				ifr.setAttribute("src", dl);
+				ifr.setAttribute("class", "bigg");
+				document.getElementById("upd_clm").appendChild(ifr);
+			}
+			async function update(){
+				const links = [
+					"https://proxxup.github.io/zfs"
+				];
+				for(var i in links){
+					try{
+						var d = await fetch(links[i]+"/latest/manifest.json", {cache: "no-store"}); //ignore cache, cuz we need ON THE SECOND updates
+						d = await d.json();
+						console.log(d);
+						if(ver != d["version"]){
+							var dl = links[i]+`/index.html?intent=update&target=${d["version"]}&source=${ver}`
+							document.getElementById("aut").innerHTML = `<span class="emph">New update: ${d["title"]}</span><br>Severity: ${d["severity"]}<br>Download: <a href="javascript:dlnew('${dl}');">here</a>`
+						}
+						break;
+					}catch(e){
+						continue;
+					}
+				}
+			}
+			async function demat(){
+				if(localStorage.__analytics !== "true"){
+					return true;
+				}
+				const links = [
+					"https://analyticz.i10.repl.co/ping?vs=#vs#",
+					"https://example.com"
+				];
+				for(var i in links){
+					try{
+						var k = await fetch(links[i].replace("#vs#", ver), {mode: "no-cors"});
+						localStorage.__analytics = true;
+						if(k.ok){
+							return false;
+						} else {
+							continue;
+						}
+					}catch(e){
+						continue;
+					}
+				}
+			}
+			demat();
+			update();
+			function phase(code){
+				var x = window.open("");
+				x.document.write(code);
+				return x;
+			}
+			function pm(code,t){
+				document.getElementsByTagName("iframe")[0].contentWindow.postMessage({
+					"type": t,
+					"code": code
+				}, "*");
+			}
+			function kill(){
+				if(document.getElementById("killsw").value == "1"){
+					window.location.replace('https://classroom.google.com/u/0/h');
+				}
+			}
+			function initB(){
+				document.getElementById("closew").innerHTML = "THIS PAGE WILL REDIRECT TO GOOGLE CLASSROOM RIGHT AFTER BUNKER OPENS, SUCCESSFULLY OR NOT<br>Got an error? Make sure you have allowed popup (chrome: to the right of the address bar)";
+				var ir = document.createElement("iframe");
+				ir.setAttribute("src", document.getElementById("provi").value);
+				document.getElementById("ifhst").appendChild(ir);
+				setTimeout(function(){
+					//pm(`var x = window.open("");x.document.write(`);
+					var e = (function(){
+						if(window.__files == undefined){
+							document.getElementById("closew").textContent = "Failed to initialize bunker: compiled.js missing (reload the page and make sure you have extracted bunker-vX-beta.zip first)";
+						} else {
+							var d = window.__files["files"]["/root.html"];
+							return d;
+						}
+					})();
+					pm(`window.__files=${JSON.stringify(window.__files)}`, "exec");
+					pm(e, "load");
+					setTimeout(kill, 2000);
+				}, 2000);
+			}
+		</script>
+		<script src="compiled.js"></script>
+		<script>document.getElementById("cload").textContent = "loaded"</script>
+		<button onclick="kill();">Remove this tab now (without opening bunker)</button>
+		</div>
+	</body>
+</html>

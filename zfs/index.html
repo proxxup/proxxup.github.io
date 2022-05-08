@@ -9,6 +9,7 @@
 			}
 			*{
 				color: #fff;
+				font-family: arial;
 			}
 			button{
 				background-color: transparent;
@@ -29,8 +30,8 @@
 			iframe{
 				border: none;
 				outline: none;
-				width: 99vw;
-				height: 96vh;
+				width: 99%;
+				height: 90vh;
 			}
 		</style>
 	</head>
@@ -44,18 +45,21 @@
 			}
 		</script>
 		<div style="display:none;" id="c">
+		<div style="overflow-wrap: break-word;">
 		<pre style="font-size:2em;">Bünker Download</pre>
 		<p>Please Create an empty folder, or select an existing bunker folder (Past v5).</p>
 		<select id="verselect">
+			<option value="v7-beta">v7-beta</option>
+			<option value="v6-fixhost">v6-fixhost</option>
 			<option value="v6-hotfix">v6-hotfix</option>
 			<option value="v6.2-beta">v6.2-beta</option>
 			<option value="v5.1-beta">v5.1-beta</option>
 		</select>
-		<pre style="color:red;font-size:2em;" id="autup"></pre>
+		<p style="color:red;font-size:2em;" id="autup"></p>
 		<pre id="progress"></pre>
 		<button id="btne" style="font-size:1em;" onclick="noregret();">Install selected version to folder</button>
 		<pre id="ert"></pre>
-		<button onclick="killPage();">Safely exit page</button>
+		<button id="kp" onclick="killPage();">Safely exit page</button>
 		<script>
 			function hello(){
 				return "click exit page safely";
@@ -64,6 +68,10 @@
 				window.parent.window.location.replace("https://classroom.google.com/0/h");
 			}
 			(function(){
+				if(window.parent.parent.location.href != window.location.href){
+					document.getElementById("kp").style.display = "none";
+					document.body.removeAttribute("onbeforeunload");
+				}
 				const urlParams = new URLSearchParams(window.location.search);
 				if(urlParams.get("intent") == "update" && urlParams.get("target") != null){
 					document.getElementById("verselect").value = urlParams.get("target");
@@ -120,6 +128,7 @@
 			}
 			
 		</script>
+		</div>
 		</div>
 	</body>
 </html>
